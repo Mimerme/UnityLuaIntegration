@@ -3,18 +3,35 @@ using System.Collections;
 using LuaInterface; //Reference the LuaInterface DLL
 
 public class LuaBinding  {
-	//Reference to bound Lua function set within Lua
-	public LuaFunction boundMessageFunction;
-	public void BindMessageFunction(LuaFunction func){
-		//Binding
-		boundMessageFunction = func;	
+	public static ArrayList mods = new ArrayList();
+	//Lua Functions to call
+	public LuaFunction startFunc;
+	public LuaFunction updateFunc;
+
+
+
+	//Default methods modders can acess
+	//RECOMENDED: DO NOT MODIFY CODE BELLOW THIS LINE
+	public void BindFunc(LuaFunction start, LuaFunction update){
+		//Binding	
+		startFunc = start;	
+		updateFunc = update;	
 	}
-	public void MessageFromLua(string message){
+	//Calls the UpdateFcuntion every frame in Lua Script
+	public void CallUpdate(){
+		updateFunc.Call ();
+		}
+	//Calls the StartFunction in Lua Script
+	public void RunStart(){
+				startFunc.Call ();
+		}
+	//Log data to Unity Debug Console from Lua script
+	public void Log(string message){
 		//Output message into the debug log
-		Debug.Log(message);	
+		Debug.Log(message);
 	}
-	public void MessageToLua(){
-		//Call the bound function with a string as its first param
-		boundMessageFunction.Call("Hello");
+	//Add mod data from lua script. Uses ModInfo.cs. Not necessary,but recommended
+	public void AddMod(string name, string version, string description){
+		mods.Add(new ModInfo(name, version, description));
 	}
 }
